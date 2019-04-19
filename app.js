@@ -7,25 +7,47 @@ class Book {
     }
 }
 
+class Storage {
+    static getBooks() {
+        let books; 
+
+        if (localStorage.getItem('books') === null)
+        {
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+        
+        return books;
+    }
+    static addBook(book) {
+        const books = Storage.getBooks();
+
+        books.push(book);
+
+        localStorage.setItem('books',JSON.stringify(books));
+    }
+    static removeBook(isbn){
+        const books = Storage.getBooks();
+
+        books.forEach((book,index) => {
+            if (book.isbn === isbn)
+            {
+                books.splice(index,1);
+            }
+        });
+
+        localStorage.setItem('books',JSON.stringify(books));
+    }
+}
+
+
 //Controls the Displaying and adding of books via the HTML form UI
 class UI {
     static displayBooks(){
-        //Test Data
-        const storedBooks = [
-            {
-                title: 'Book One',
-                author: 'Author One',
-                isbn: '12345'
-            },
-            {
-                title: 'Book Two',
-                author: 'Author Two',
-                isbn: '45678'
-            }
-        ];
-
-        const books = storedBooks;
-
+       
+        const books = Storage.getBooks();
+        
         books.forEach((book) => UI.addBook(book));
     }
 
@@ -81,6 +103,7 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
         //Show a success message when a book is added.
         const book = new Book(document.querySelector('#title').value,document.querySelector('#author').value,document.querySelector('#isbn').value);
         UI.addBook(book);
+        Storage.addBook(book);
         UI.showMessage('Book Added Successfully!','success');
         UI.resetForm();
     }
@@ -93,4 +116,5 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 
 document.querySelector('#book-list').addEventListener('click', (e) => {
    UI.deleteBook(e.target);
+   Storage.removeBook(e.target.parentElement.previousElementSibling.textContent);
 });
