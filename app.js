@@ -66,21 +66,28 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
     //Form validation - everything can be a string but we want to make sure isbn is a number otherwise print an error
     if (!isNaN(document.querySelector('#isbn').value))
     {
+        //Show a success message when a book is added.
         const book = new Book(document.querySelector('#title').value,document.querySelector('#author').value,document.querySelector('#isbn').value);
         UI.addBook(book);
-        UI.resetForm();
+        const success_div = document.querySelector('#status-msg');
+        const message = document.createElement('div');
+        message.innerHTML = '<label class="alert alert-success text-center btn-block mt-4" role="alert">Book Successfully Added!</label>';
+        success_div.appendChild(message);
+        setTimeout(() => {
+            success_div.removeChild(message);
+            UI.resetForm();
+        },1500);
     }
     else {
         //Add in an error message to a div - display it for 2 seconds then clear and remove what is in ISBN field
-        const error_div = document.querySelector('#error-msg');
-        console.log(error_div);
+        const error_div = document.querySelector('#status-msg');
         const message = document.createElement('div');
         message.innerHTML = '<label class="alert alert-danger text-center btn-block mt-4" role="alert">ISBN must be a number!</label>';
         error_div.appendChild(message);
         setTimeout(() => {
             error_div.removeChild(message);
             document.querySelector('#isbn').value = '';
-        },2000);
+        },1500);
     }
 });
 
