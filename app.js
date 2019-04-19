@@ -62,9 +62,26 @@ document.addEventListener('DOMContentLoaded', UI.displayBooks());
 
 document.querySelector('#book-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const book = new Book(document.querySelector('#title').value,document.querySelector('#author').value,document.querySelector('#isbn').value);
-    UI.addBook(book);
-    UI.resetForm();
+
+    //Form validation - everything can be a string but we want to make sure isbn is a number otherwise print an error
+    if (!isNaN(document.querySelector('#isbn').value))
+    {
+        const book = new Book(document.querySelector('#title').value,document.querySelector('#author').value,document.querySelector('#isbn').value);
+        UI.addBook(book);
+        UI.resetForm();
+    }
+    else {
+        //Add in an error message to a div - display it for 2 seconds then clear and remove what is in ISBN field
+        const error_div = document.querySelector('#error-msg');
+        console.log(error_div);
+        const message = document.createElement('div');
+        message.innerHTML = '<label class="alert alert-danger text-center btn-block mt-4" role="alert">ISBN must be a number!</label>';
+        error_div.appendChild(message);
+        setTimeout(() => {
+            error_div.removeChild(message);
+            document.querySelector('#isbn').value = '';
+        },2000);
+    }
 });
 
 document.querySelector('#book-list').addEventListener('click', (e) => {
