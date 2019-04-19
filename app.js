@@ -53,7 +53,19 @@ class UI {
         if (el.classList.contains('delete'))
         {
             el.parentElement.parentElement.remove();
+            UI.showMessage('Book Removed','success')
         }
+    }
+
+    static showMessage(output,alert_type)
+    {
+        const success_div = document.querySelector('#status-msg');
+        const message = document.createElement('div');
+        message.innerHTML = `<label class="alert alert-${alert_type} text-center btn-block mt-4" role="alert">${output}</label>`;
+        success_div.appendChild(message);
+        setTimeout(() => {
+            success_div.removeChild(message);
+        },1500);
     }
 }
 
@@ -69,25 +81,13 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
         //Show a success message when a book is added.
         const book = new Book(document.querySelector('#title').value,document.querySelector('#author').value,document.querySelector('#isbn').value);
         UI.addBook(book);
-        const success_div = document.querySelector('#status-msg');
-        const message = document.createElement('div');
-        message.innerHTML = '<label class="alert alert-success text-center btn-block mt-4" role="alert">Book Successfully Added!</label>';
-        success_div.appendChild(message);
-        setTimeout(() => {
-            success_div.removeChild(message);
-            UI.resetForm();
-        },1500);
+        UI.showMessage('Book Added Successfully!','success');
+        UI.resetForm();
     }
     else {
         //Add in an error message to a div - display it for 2 seconds then clear and remove what is in ISBN field
-        const error_div = document.querySelector('#status-msg');
-        const message = document.createElement('div');
-        message.innerHTML = '<label class="alert alert-danger text-center btn-block mt-4" role="alert">ISBN must be a number!</label>';
-        error_div.appendChild(message);
-        setTimeout(() => {
-            error_div.removeChild(message);
-            document.querySelector('#isbn').value = '';
-        },1500);
+        UI.showMessage('ISBN Must Be A Number!','danger');
+        document.querySelector('#isbn').value = '';
     }
 });
 
